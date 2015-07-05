@@ -45,13 +45,26 @@ class GEMSTAT_Matrix(object):
 	@classmethod
 	def load(cls, filename):
 		retmat = GEMSTAT_Matrix()
-		stuff = S.loadtxt(filename,dtype=S.str_ )
-		header = stuff[0]
-		the_rest = stuff[1:]
-			
-		retmat.names = list(the_rest[:,0])
+		
+		tmp_names = list()
+		tmp_namemap = dict()
+		def _convert_and_store_name(in_str):
+			position = len(tmp_names)
+			tmp_names.append(in_str)
+			tmp_namemap[in_str] = position
+			return position
+		
+		stuff   = S.loadtxt(filename,converters={0:_convert_and_store_name})[:,1:]
+		COLNUMS = S.array(stuff[0],dtype=S.int_)
+		DATA    = stuff[1:]
+		
+		#Sanity Check
+		if "ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)))]):
+			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' and that the column numbers be contiguous integers 1-N, sorry.")
+		
+		retmat.names = tmp_names[1:]
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])
-		retmat.storage = S.array(the_rest[:,1:],dtype=S.float_)
+		retmat.storage = DATA
 		return retmat
 
 
