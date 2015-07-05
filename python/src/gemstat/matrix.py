@@ -49,6 +49,7 @@ class GEMSTAT_Matrix(object):
 		tmp_names = list()
 		tmp_namemap = dict()
 		def _convert_and_store_name(in_str):
+			in_str = str(in_str).strip()
 			position = len(tmp_names)
 			tmp_names.append(in_str)
 			tmp_namemap[in_str] = position
@@ -59,7 +60,7 @@ class GEMSTAT_Matrix(object):
 		DATA    = stuff[1:]
 		
 		#Sanity Check
-		if b"ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)+1))]):
+		if "ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)+1))]):
 			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' and that the column numbers be contiguous integers 1-N, sorry.")
 		
 		retmat.names = tmp_names[1:]
