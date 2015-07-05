@@ -49,7 +49,7 @@ class GEMSTAT_Matrix(object):
 		tmp_names = list()
 		tmp_namemap = dict()
 		def _convert_and_store_name(in_str):
-			in_str = str(in_str,"ASCII").strip()
+			in_str = str(in_str).decode("ASCII").strip()
 			position = len(tmp_names)
 			tmp_names.append(in_str)
 			tmp_namemap[in_str] = position
