@@ -59,7 +59,7 @@ class GEMSTAT_Matrix(object):
 		DATA    = stuff[1:]
 		
 		#Sanity Check
-		if "ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)))]):
+		if b"ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)+1))]):
 			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' and that the column numbers be contiguous integers 1-N, sorry.")
 		
 		retmat.names = tmp_names[1:]
