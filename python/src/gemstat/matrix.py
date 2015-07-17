@@ -3,6 +3,23 @@ from __future__ import print_function
 import scipy as S
 import scipy.io as SIO
 
+def renumber_curve(in_curve,newN,s=0.001):
+    import scipy.interpolate as INTERP
+    
+    orig_ndim = in_curve.ndim
+    as_matrix = S.array(in_curve,ndmin=2)
+    N,M = as_matrix.shape
+    
+    old_x = S.linspace(0.0,1.0,M)
+    new_x = S.linspace(0.0,1.0,newN)
+    
+    spline_reps = [INTERP.splrep(old_x,row,s=s) for row in as_matrix]
+    reconstituted = S.array([INTERP.splev(new_x,sp_rep) for sp_rep in spline_reps])
+    if orig_ndim == 1:
+        return reconstituted[0]
+    else:
+        return reconstituted
+
 class GEMSTAT_Matrix(object):
 	def __init__(self):
 		self.storage = None
@@ -60,7 +77,7 @@ class GEMSTAT_Matrix(object):
 		DATA    = stuff[1:]
 		
 		#Sanity Check
-		if "ROWS" != tmp_names[0] or any([i != j for i,j in izip(COLNUMS,range(1,len(COLNUMS)+1))]):
+		if "ROWS" != tmp_names[0].upper() or any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
 			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' and that the column numbers be contiguous integers 1-N, sorry.")
 		
 		retmat.names = tmp_names[1:]
