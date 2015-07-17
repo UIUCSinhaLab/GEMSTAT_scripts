@@ -92,24 +92,24 @@ class ParFile(object):
 
 		class putback_buffer(object):
 			def __init__(self, thing):
-				self.thing = thing
-				self.buffer = list()
+				self.lines = [l for l in thing]
+				self.SIZE = len(self.lines)
+				self.position = 0
 			
 			def __iter__(self):
 				return self
 
 			def __next__(self):
-				if len(self.buffer) > 0:
-					return self.buffer.pop(0)
+				if self.position == self.SIZE:
+					raise StopIteration
 				else:
-					try:
-						return self.thing.__next__()
-					except:
-						return self.thing.next()
+					self.position += 1
+					return self.lines[self.position - 1]
+
 			def next(self):
 				return self.__next__()
 			def putback(self, item):
-				self.buffer.insert(0,item)
+				self.position-=1
 
 		tf_buffer = list()
 		N_TF = -1
@@ -175,4 +175,4 @@ class ParFile(object):
 				raise Exception("The number of qbtms, betas, and pis did not match")
 			thresh_out = float_buffer[-N_TF:]
 			float_buffer = float_buffer[:-N_TF]
-			return {"tfs":tf_buffer, "qbtms":qbtm,"pis":float_buffer[:len(float_buffer)/2],"betas":float_buffer[len(float_buffer)/2:],"coops":coop_buffer,"thresholds":thresh_out} 
+			return {"tfs":tf_buffer, "qbtms":qbtm,"pis":float_buffer[:int(len(float_buffer)/2)],"betas":float_buffer[int(len(float_buffer)/2):],"coops":coop_buffer,"thresholds":thresh_out} 
