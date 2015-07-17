@@ -45,10 +45,13 @@ def normal(mu,std):
 #coop_range = S.array([1, 100])
 #q_btm_range = S.array([0.001, 0.01])
 
-import pystache
-
+from itertools import count
 import argparse
 parser = argparse.ArgumentParser()
+parser.add_argument("--values",default=None,type=str,help="file to get values from for templating")
+parser.add_argument("--outpre",default=None,type=str,help="Prefix for generating multiple, files will be OUTPRE_N.par")
+parser.add_argument("--N",default=None,type=int,help="Number to generate, ignored if values provided")
+parser.add_argument("--base",default=1,type=int,help="Starting point for numbering")
 parser.add_argument("INFILE", metavar="IN_FILE", type=str)
 #parser.add_argument("OUTFILE", metavar="OUT_FILE", type=str)
 args, other = parser.parse_known_args()
@@ -60,7 +63,29 @@ thetemplate = open(args.INFILE).read()
 my_regex = re.compile("{{(.*?)}}")
 
 things = my_regex.findall(thetemplate)
-replaced_things = [foo[one_thing] for one_thing in things]
-
 final_template = my_regex.sub("%f",thetemplate)
-print(final_template.strip() % tuple(replaced_things))
+
+
+
+if args.values:
+	#load up the values and whatnot
+	values = S.loadtxt(args.values,ndmin=2)
+	Num,M = values.shape
+	assert M == len(things) , "If you provide values, you must provide all the values."
+	for i,one_row in zip(range(args.base,S.minimum(args.N,Num)+args.base),values):
+		substituted = final_template % tuple(one_row)
+		outfile = open(args.outpre + ("_%i.par" % i),"w")
+		outfile.write(substituted)
+		outfile.close()
+	sys.exit(0)
+
+elif args.N == None: #use the templating engine
+	replaced_things = [foo[one_thing] for one_thing in things]
+	print(final_template.strip() % tuple(replaced_things))
+elif args.N >= 1:
+	for i in range(args.base,args.base+args.N):
+		replaced_things = [foo[one_thing] for one_thing in things]
+		substituted = final_template % tuple(replaced_things)
+		outfile = open(args.outpre + ("_%i.par" % i),"w")
+		outfile.write(substituted)
+		outfile.close()
