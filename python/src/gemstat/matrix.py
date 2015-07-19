@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import numpy as NP
 import scipy as S
 import scipy.io as SIO
 
@@ -23,17 +24,25 @@ def renumber_curve(in_curve,newN,s=0.001):
 class GEMSTAT_Matrix(object):
 	def __init__(self):
 		self.storage = None
-		self.names = list()
+		self.names = S.array([],dtype='|S4')
 		self.names_to_rows = dict()
 	
 	def add_row(self, name, data):
-		self.names.append(name)
+		self.names = S.hstack([self.names, S.array([name],dtype='|S4')])
 		self.names_to_rows[name] = len(self.names) - 1
 
 		if self.storage == None:
 			self.storage = data.reshape(1,-1)
 		else:
 			self.storage = S.vstack([self.storage, data])
+	
+	def __getitem__(self, index):
+		if isinstance(index,str):
+			#get row(s) by name
+			return self.storage[self.names == index]
+		else:
+			return self.storage[index]
+
 	
 	def add_column(self, column):
 		self.storage = S.hstack([self.storage, column.reshape(-1,1)])
@@ -77,8 +86,12 @@ class GEMSTAT_Matrix(object):
 		DATA    = stuff[1:]
 		
 		#Sanity Check
-		if "ROWS" != tmp_names[0].upper() or any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
-			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' and that the column numbers be contiguous integers 1-N, sorry.")
+		import pdb
+		pdb.set_trace()
+		if "ROWS" != tmp_names[0].upper():
+			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' (case insensitive).")
+		if any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
+			raise Exception("Currently the GEMSTAT_Matirx parser requires that the column numbers be contiguous integers 1-N, sorry.")
 		
 		retmat.names = tmp_names[1:]
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])
