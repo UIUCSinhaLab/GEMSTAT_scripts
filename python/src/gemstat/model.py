@@ -177,9 +177,7 @@ class ParFile(object):
 			float_buffer = float_buffer[:-N_TF]
 			return {"tfs":tf_buffer, "qbtms":qbtm,"pis":float_buffer[:int(len(float_buffer)/2)],"betas":float_buffer[int(len(float_buffer)/2):],"coops":coop_buffer,"thresholds":thresh_out}
 
-def parfile_to_vector(par_dict):
-	"""definitely temporary code that I will depricate."""
-    
+def parfile_to_vector(par_dict,factor_roles=None,include_pis=False):
     storage = list() # binding, coop, act, rep, qbtm, PIS(not used), betas, thresholds
     
     all_bind = list()
@@ -207,10 +205,16 @@ def parfile_to_vector(par_dict):
     
     storage.extend(all_bind)
     storage.extend([i[1] for i in all_coops])
-    storage.extend(all_act)
-    storage.extend(all_rep)
+    if factor_roles == None:
+    	storage.extend(all_act)
+        storage.extend(all_rep)
+    else:
+    	storage.extend([i for i,j in zip(all_act,tf_names) if factor_roles[j][0]])
+    	storage.extend([i for i,j in zip(all_rep,tf_names) if factor_roles[j][1]])
     storage.extend(par_dict["qbtms"])
+    if include_pis:
+	    storage.extend(par_dict["pis"])
     storage.extend(par_dict["betas"])
     storage.extend(par_dict["thresholds"])
     
-    return S.array(storage)
+    return np.array(storage)
