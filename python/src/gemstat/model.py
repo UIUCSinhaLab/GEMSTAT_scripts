@@ -178,43 +178,43 @@ class ParFile(object):
 			return {"tfs":tf_buffer, "qbtms":qbtm,"pis":float_buffer[:int(len(float_buffer)/2)],"betas":float_buffer[int(len(float_buffer)/2):],"coops":coop_buffer,"thresholds":thresh_out}
 
 def parfile_to_vector(par_dict,factor_roles=None,include_pis=False):
-    storage = list() # binding, coop, act, rep, qbtm, PIS(not used), betas, thresholds
-    
-    all_bind = list()
-    all_act = list()
-    all_rep = list()
-    
-    all_coops = list()
-    
-    tf_names = [i[0] for i in par_dict["tfs"]]
-    
-    for name,(bind,act,rep) in par_dict["tfs"]:
-        all_bind.append(bind)
-        all_act.append(act)
-        all_rep.append(rep)
-    
-    for name1,name2,coopval in par_dict["coops"]:
-        ind1 = tf_names.index(name1)
-        ind2 = tf_names.index(name2)
-        
-        if ind2 < ind1:
-            ind1,ind2 = ind2,ind2
-        all_coops.append(((ind1,ind2),coopval))
-    all_coops.sort(key=lambda x:x[0][1])
-    all_coops.sort(key=lambda x:x[0][0])
-    
-    storage.extend(all_bind)
-    storage.extend([i[1] for i in all_coops])
-    if factor_roles == None:
-    	storage.extend(all_act)
-        storage.extend(all_rep)
-    else:
-    	storage.extend([i for i,j in zip(all_act,tf_names) if factor_roles[j][0]])
-    	storage.extend([i for i,j in zip(all_rep,tf_names) if factor_roles[j][1]])
-    storage.extend(par_dict["qbtms"])
-    if include_pis:
-	    storage.extend(par_dict["pis"])
-    storage.extend(par_dict["betas"])
-    storage.extend(par_dict["thresholds"])
-    
-    return np.array(storage)
+	storage = list() # binding, coop, act, rep, qbtm, PIS(not used), betas, thresholds
+	
+	all_bind = list()
+	all_act = list()
+	all_rep = list()
+	
+	all_coops = list()
+	
+	tf_names = [i[0] for i in par_dict["tfs"]]
+	
+	for name,(bind,act,rep) in par_dict["tfs"]:
+		all_bind.append(bind)
+		all_act.append(act)
+		all_rep.append(rep)
+	
+	for name1,name2,coopval in par_dict["coops"]:
+		ind1 = tf_names.index(name1)
+		ind2 = tf_names.index(name2)
+		
+		if ind2 < ind1:
+			ind1,ind2 = ind2,ind2
+		all_coops.append(((ind1,ind2),coopval))
+	all_coops.sort(key=lambda x:x[0][1])
+	all_coops.sort(key=lambda x:x[0][0])
+	
+	storage.extend(all_bind)
+	storage.extend([i[1] for i in all_coops])
+	if factor_roles == None:
+		storage.extend(all_act)
+		storage.extend(all_rep)
+	else:
+		storage.extend([i for i,j in zip(all_act,tf_names) if factor_roles[j][0]])
+		storage.extend([i for i,j in zip(all_rep,tf_names) if factor_roles[j][1]])
+	storage.extend(par_dict["qbtms"])
+	if include_pis:
+		storage.extend(par_dict["pis"])
+	storage.extend(par_dict["betas"])
+	storage.extend(par_dict["thresholds"])
+	
+	return np.array(storage)
