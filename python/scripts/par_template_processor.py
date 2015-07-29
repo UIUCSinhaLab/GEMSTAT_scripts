@@ -74,7 +74,7 @@ if args.values:
 	assert M == len(things) , "If you provide values, you must provide all the values."
 	for i,one_row in zip(range(args.base,S.minimum(args.N,Num)+args.base),values):
 		substituted = final_template % tuple(one_row)
-		outfile = open(args.outpre + ("_%i.par" % i),"w")
+		outfile = open(args.outpre + ("%i.par" % i),"w")
 		outfile.write(substituted)
 		outfile.close()
 	sys.exit(0)
@@ -86,6 +86,6 @@ elif args.N >= 1:
 	for i in range(args.base,args.base+args.N):
 		replaced_things = [foo[one_thing] for one_thing in things]
 		substituted = final_template % tuple(replaced_things)
-		outfile = open(args.outpre + ("_%i.par" % i),"w")
+		outfile = open(args.outpre + ("%i.par" % i),"w")
 		outfile.write(substituted)
 		outfile.close()
