@@ -25,11 +25,11 @@ def renumber_curve(in_curve,newN,s=0.001):
 class GEMSTAT_Matrix(object):
 	def __init__(self):
 		self.storage = None
-		self.names = _NP.array([],dtype='|S4')
+		self.names = _NP.array([],dtype='|U')
 		self.names_to_rows = dict()
 	
 	def add_row(self, name, data):
-		self.names = _NP.hstack([self.names, _NP.array([name],dtype='|S4')])
+		self.names = _NP.hstack([self.names, _NP.array([name],dtype='|U')])
 		self.names_to_rows[name] = len(self.names) - 1
 
 		if self.storage == None:
@@ -114,7 +114,7 @@ class GEMSTAT_Matrix(object):
 		if any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
 			raise Exception("Currently the GEMSTAT_Matirx parser requires that the column numbers be contiguous integers 1-N, sorry.")
 		
-		retmat.names = _NP.array(tmp_names[1:])
+		retmat.names = _NP.array(tmp_names[1:],dtype="|U")
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])
 		retmat.storage = DATA
 		return retmat
