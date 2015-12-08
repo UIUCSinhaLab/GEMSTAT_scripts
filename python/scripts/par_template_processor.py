@@ -52,7 +52,7 @@ parser.add_argument("--values",default=None,type=str,help="file to get values fr
 parser.add_argument("--outpre",default=None,type=str,help="Prefix for generating multiple, files will be OUTPRE_N.par")
 parser.add_argument("--N",default=None,type=int,help="Number to generate, ignored if values provided")
 parser.add_argument("--base",default=1,type=int,help="Starting point for numbering")
-parser.add_argumetn("--seed",type=int,help="Random seed for reproducible randomness.")
+parser.add_argument("--seed",type=int,help="Random seed for reproducible randomness.")
 parser.add_argument("INFILE", metavar="IN_FILE", type=str)
 #parser.add_argument("OUTFILE", metavar="OUT_FILE", type=str)
 args, other = parser.parse_known_args()
