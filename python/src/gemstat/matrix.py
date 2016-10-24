@@ -111,8 +111,8 @@ class GEMSTAT_Matrix(object):
 		#Sanity Check
 		if "ROWS" != tmp_names[0].upper():
 			raise Exception("Currently the GEMSTAT_Matrix parser requires the first row be named 'ROWS' (case insensitive).")
-		if any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
-			raise Exception("Currently the GEMSTAT_Matirx parser requires that the column numbers be contiguous integers 1-N, sorry.")
+		#if any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
+		#	raise Exception("Currently the GEMSTAT_Matirx parser requires that the column numbers be contiguous integers 1-N, sorry.")
 		
 		retmat.names = _NP.array(tmp_names[1:],dtype="|U")
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])

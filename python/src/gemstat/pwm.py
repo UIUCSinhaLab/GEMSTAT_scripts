@@ -6,8 +6,8 @@ import re as _re
 import StringIO as _SIO
 
 class GemPWM(_MOT):
-	def __init__(self,name,counts,pseudocount="0.1"):
-		self.name = name
+	def __init__(self,inname,counts,pseudocount="0.1"):
+		self.name = inname
 		countsdict = dict(zip("ACGT",counts.T+pseudocount))
 		super(GemPWM, self).__init__(alphabet=_unamb_dna,counts=countsdict)
 
