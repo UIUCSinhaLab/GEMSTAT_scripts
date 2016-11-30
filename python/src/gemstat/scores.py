@@ -1,26 +1,28 @@
+import scipy as _S
+
 def sse(gt,prediction):
 	"""Weighting not yet implemented.
 	"""
 	
-	return S.power(gt - prediction).mean()
+	return _S.real(_S.power(gt - prediction,2.0).mean())
 
-def wPGP(gt_prediction):
+def wPGP(gt,prediction):
 	"""
 	Not yet weighted.
 	"""
 	r_max = gt.max()
 	
-	prediction = S.minimum(prediction,1.0)
+	prediction = _S.minimum(prediction,1.0)
 	
-	reward = (gt*S.minimum(gt,prediction)).sum()/S.power(gt,2.0).sum()
+	reward = (gt*_S.minimum(gt,prediction)).sum()/_S.power(gt,2.0).sum()
 	
     	penalty_num = (
 		(r_max - gt)
 		*(prediction - gt)
-		*S.array(prediction > gt,dtype=S.float_)
+		*_S.array(prediction > gt,dtype=_S.float_)
 		).sum()
 	
-	penalty_denom = S.power(r_max - gt,2.0).sum()
+	penalty_denom = _S.power(r_max - gt,2.0).sum()
 	penalty = penalty_num / penalty_denom
 	
 	wpgp_score = 0.5 + 0.5*(reward-penalty)
