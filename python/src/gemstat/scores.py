@@ -1,10 +1,17 @@
 import scipy as _S
 
-def sse(gt,prediction):
+def sse_old(gt,prediction):
 	"""Weighting not yet implemented.
 	"""
 	
-	return _S.real(_S.power(gt - prediction,2.0).mean())
+	return _S.real(_S.power(gt - prediction,2.0).sum())
+
+def sse(gt,predictions):
+    predictions = _S.array(predictions,ndmin=2)
+    N,M = predictions.shape
+    
+    errors = [ _S.power(_S.maximum(0.0,row)-_S.maximum(0.0,gt),2.0).mean(1) for row in predictions]#we expect a vector, but if we get a matrix, this mean is more deffensive. (will cause an error later)
+    return _S.absolute(_S.array(errors).ravel())
 
 def wPGP(gt,prediction):
 	"""
