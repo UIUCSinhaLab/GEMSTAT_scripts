@@ -32,7 +32,7 @@ class GEMSTAT_Matrix(object):
 		self.names = _NP.hstack([self.names, _NP.array([name],dtype='|U')])
 		self.names_to_rows[name] = len(self.names) - 1
 
-		if self.storage == None:
+		if self.storage is None:
 			self.storage = data.reshape(1,-1)
 		else:
 			self.storage = _NP.vstack([self.storage, data])
