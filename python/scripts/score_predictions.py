@@ -47,7 +47,7 @@ else:
 the_score = None
 
 if args.score == "SSE":
-	the_score = scoring.sse(ground_truth.storage,predictions.storage)
+	the_score = scoring.sse(ground_truth.storage,predictions.storage).mean()
 elif args.score == "PGP":
 	the_score = scoring.wPGP(ground_truth.storage,predictions.storage)
 else:

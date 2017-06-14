@@ -7,11 +7,11 @@ def sse_old(gt,prediction):
 	return _S.real(_S.power(gt - prediction,2.0).sum())
 
 def sse(gt,predictions):
+    gt = _S.array(gt,ndmin=2)
     predictions = _S.array(predictions,ndmin=2)
     N,M = predictions.shape
-    
-    errors = [ _S.power(_S.maximum(0.0,row)-_S.maximum(0.0,gt),2.0).mean(1) for row in predictions]#we expect a vector, but if we get a matrix, this mean is more deffensive. (will cause an error later)
-    return _S.absolute(_S.array(errors).ravel())
+    errors = _S.power(_S.maximum(0.0,predictions) - _S.maximum(0.0,gt), 2.0).mean(1)
+    return _S.absolute(_S.real(errors))
 
 def wPGP(gt,prediction):
 	"""
