@@ -54,24 +54,86 @@ class Model(object):
 		self.interactions = dict()
 		self.betas = dict()#why not roll this into output gene?
 		self.factor_thresholds = dict()#not exactly part of the model.
-	
+
 	def add_factor(self, in_fact,threshold=0.5):
 		self.factors.append(in_fact)
 		self.factor_names_to_positions[in_fact.name] = len(self.factors)-1
 		self.factor_thresholds.append(threshold)
-	
+
 	def add_output(self, new_out,beta=1.0,pi=1e-50):
 		self.output_genes.append(new_out)
 		self.betas.append(beta)
 		self.pis.append(pi)
-	
+
 	def add_interaction(self,new_inter):
 		self.interactions.append(new_inter)
+
+from collections import OrderedDict
 
 class ParFile(object):
 	"""Reads an intermediate representation of a par file. That can then be transformed into a model.
 	Can more easily transform a model into a par file.
 	"""
+	@classmethod
+	def read_1_6a(cls, filename):
+		tf_lines = list()
+		basal_trans = list()
+		pis = list()
+		betas = list()
+		coop_lines = list()
+		annotation_cutoffs = None
+
+		tmp_line = None
+		with open(filename, "r") as infile:
+			#TF Lines
+			header = infile.next()
+			if "#GSPAR1.6a" != header.strip().split()[0]:
+				raise Exception("File does not contain the correct header!")
+
+			for line in infile:
+				if line.startswith("basal_transcription ="):
+					tmp_line = line
+					break
+				tf_lines.append(line)
+			#basal_transcription
+			basal_trans = tmp_line[tmp_line.find("=")+1:]
+			tmp_line = None
+			#other promoter stuff
+			pis = infile.next()
+			betas = infile.next()
+			#cooperativity values
+			for line in infile:
+				coop_lines.append(line)
+			#past_eof
+			annotation_cutoffs = coop_lines.pop(-1)
+		#end
+		tf_lines = [i.strip().split() for i in tf_lines]
+		tf_lines = [(i[0],map(float,i[1:])) for i in tf_lines]
+		basal_trans = map(float,basal_trans.strip().split())
+		pis = map(float,pis.strip().split())
+		betas = map(float,betas.strip().split())
+		coop_lines = [i.strip().split() for i in coop_lines]
+		coop_lines = [((a,b),float(c)) for a,b,c in coop_lines]
+		annotation_cutoffs = map(float,annotation_cutoffs.strip().split())
+
+		if len(pis) != len(betas):
+			raise Exception("number of pis and betas disagree while reading parfile.")
+
+		if len(annotation_cutoffs) != len(tf_lines):
+			raise Exception("TF lines and cutoffs disagree in number while reading parfile.")
+
+		#Using an OrderedDict ensures that it prints out in the same order as the parfile.
+		retdict = OrderedDict()
+		retdict["tfs"] = tf_lines
+		retdict["qbtms"] = basal_trans
+		retdict["pis"] = pis
+		retdict["betas"] = betas
+		retdict["coops"] = coop_lines
+		retdict["thresholds"] = annotation_cutoffs
+		return retdict
+
+
+
 	@classmethod
 	def read_old_par(cls, filename,strict=True):
 		retmodel = Model()
@@ -95,7 +157,7 @@ class ParFile(object):
 				self.lines = [l for l in thing]
 				self.SIZE = len(self.lines)
 				self.position = 0
-			
+
 			def __iter__(self):
 				return self
 
@@ -179,30 +241,30 @@ class ParFile(object):
 
 def parfile_to_vector(par_dict,factor_roles=None,include_pis=False):
 	storage = list() # binding, coop, act, rep, qbtm, PIS(not used), betas, thresholds
-	
+
 	all_bind = list()
 	all_act = list()
 	all_rep = list()
-	
+
 	all_coops = list()
-	
+
 	tf_names = [i[0] for i in par_dict["tfs"]]
-	
+
 	for name,(bind,act,rep) in par_dict["tfs"]:
 		all_bind.append(bind)
 		all_act.append(act)
 		all_rep.append(rep)
-	
+
 	for name1,name2,coopval in par_dict["coops"]:
 		ind1 = tf_names.index(name1)
 		ind2 = tf_names.index(name2)
-		
+
 		if ind2 < ind1:
 			ind1,ind2 = ind2,ind2
 		all_coops.append(((ind1,ind2),coopval))
 	all_coops.sort(key=lambda x:x[0][1])
 	all_coops.sort(key=lambda x:x[0][0])
-	
+
 	storage.extend(all_bind)
 	storage.extend([i[1] for i in all_coops])
 	if factor_roles == None:
@@ -216,5 +278,5 @@ def parfile_to_vector(par_dict,factor_roles=None,include_pis=False):
 		storage.extend(par_dict["pis"])
 	storage.extend(par_dict["betas"])
 	storage.extend(par_dict["thresholds"])
-	
+
 	return np.array(storage)
