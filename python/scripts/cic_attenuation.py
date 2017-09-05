@@ -7,6 +7,15 @@ import sys
 
 import scipy as S
 
+
+def bryan_active_cic2(cic,erk,att):
+    #return cic - cic*S.power(1+S.power(erk,-1.0)*S.exp(-att),-1.0)
+    return cic*S.power(1.0 + erk*S.exp(att),-1.0)#Identical to above, solved differently.
+
+def hassan_active_cic(cic,erk,cic_att=16.0):
+    """Hassan's method of calculating effective CIC concentration."""
+    return cic * S.exp(-cic_att * erk)
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--C", metavar="C", type=float, help="attenuation parameter.")
@@ -14,6 +23,8 @@ parser.add_argument("--target", metavar="TARGET", type=str, help="which factor t
 parser.add_argument("--attenuator", metavar="SOURCE", type=str, help="name of TF that causes attenuation")
 
 parser.add_argument("--other_matrix", metavar="OTHER", type=str, help="If the attenuator is in a different expression matrix.")
+
+parser.add_argument("--bryan",action="store_true", help="Use bryan's formula for CIC attenuation, instead of hassan's")
 
 parser.add_argument("INFILE", metavar="IN_FILE", type=str)
 parser.add_argument("OUTFILE", metavar="OUT_FILE", type=str)
@@ -46,8 +57,13 @@ if other_mat:
 else:
 	attenuator = in_matrix.storage[in_matrix.names_to_rows[args.attenuator],:]
 
-attenuation = S.exp( - args.C * attenuator )
+after_attenuation = None
+if args.bryan:
+	after_attenuation = bryan_active_cic2(in_matrix.storage[target_row_id,:], attenuator, args.C)
+else:
+	after_attenuation = hassan_active_cic(in_matrix.storage[target_row_id,:], attenuator, args.C)
 
-in_matrix.storage[target_row_id,:] *= attenuation
+
+in_matrix.storage[target_row_id,:] = after_attenuation
 
 in_matrix.write(args.OUTFILE,format="%.5e")

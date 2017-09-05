@@ -1,3 +1,4 @@
+#GSPAR1.6a
 dl	{{log_uniform:0.01,10000}}	{{log_uniform:1,10}}       0.01
 vfl     {{log_uniform:0.01,10000}}	{{const:1.0}}       0.01
 cic     {{log_uniform:0.01,10000}}	1       {{log_uniform:0.00001,1}}
