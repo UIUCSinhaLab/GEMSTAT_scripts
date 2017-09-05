@@ -70,4 +70,4 @@ else:
 
 in_matrix.storage[target_row_id,:] = after_attenuation
 
-in_matrix.write(args.OUTFILE,format="%.5e")
+in_matrix.write(args.OUTFILE,format="%.5f")
