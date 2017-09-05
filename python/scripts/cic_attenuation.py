@@ -20,11 +20,13 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--C", metavar="C", type=float, help="attenuation parameter.")
 parser.add_argument("--target", metavar="TARGET", type=str, help="which factor to attentuate")
-parser.add_argument("--attenuator", metavar="SOURCE", type=str, help="name of TF that causes attenuation")
+parser.add_argument("--attenuator", metavar="SOURCE", type=str, help="name of TF/kinase/input that causes attenuation")
 
 parser.add_argument("--other_matrix", metavar="OTHER", type=str, help="If the attenuator is in a different expression matrix.")
 
-parser.add_argument("--bryan",action="store_true", help="Use bryan's formula for CIC attenuation, instead of hassan's")
+parser.add_argument("--bryan",action="store_true", help="Use bryan's formula for CIC attenuation, instead of hassan's.")
+
+parser.add_argument("--prescale_attenuator",metavar="P",type=float,default=1.0,help="Scale the attenuator before applying attenuation.")
 
 parser.add_argument("INFILE", metavar="IN_FILE", type=str)
 parser.add_argument("OUTFILE", metavar="OUT_FILE", type=str)
@@ -56,6 +58,8 @@ if other_mat:
 	attenuator = other_mat.storage[other_mat.names_to_rows[args.attenuator],:]
 else:
 	attenuator = in_matrix.storage[in_matrix.names_to_rows[args.attenuator],:]
+
+attenuator *= args.prescale_attenuator
 
 after_attenuation = None
 if args.bryan:
