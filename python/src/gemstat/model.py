@@ -70,6 +70,19 @@ class Model(object):
 
 from collections import OrderedDict
 
+class SetDict(dict):
+	def _keyconvert(self,key):
+		if isinstance(key,str):
+			key = [key]
+		return frozenset(key)
+	
+	def __setitem__(self,key,item):
+		return super(SetDict,self).__setitem__(self._keyconvert(key),item)
+	
+	def __getitem__(self,key):
+		return super(SetDict,self).__getitem__(self._keyconvert(key))
+	
+
 class ParFile(object):
 	"""Reads an intermediate representation of a par file. That can then be transformed into a model.
 	Can more easily transform a model into a par file.
@@ -124,7 +137,7 @@ class ParFile(object):
 
 		#Using an OrderedDict ensures that it prints out in the same order as the parfile.
 		retdict = OrderedDict()
-		retdict["tfs"] = tf_lines
+		retdict["tfs"] = OrderedDict(tf_lines)
 		retdict["qbtms"] = basal_trans
 		retdict["pis"] = pis
 		retdict["betas"] = betas
