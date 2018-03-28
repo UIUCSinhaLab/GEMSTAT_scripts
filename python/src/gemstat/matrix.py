@@ -44,7 +44,18 @@ class GEMSTAT_Matrix(object):
 	def hstack_update(self, other):
 		desired_order_other = [other.names_to_rows[i] for i in self.names]
 		self.storage = _NP.hstack([self.storage, other[desired_order_other]])
-	
+
+	@property	
+	def has_gt(self):
+		if not self.storage.shape[0]%2 == 0:
+			return False
+		for i in range(0,self.names.shape[0],2):
+			if not self.names[i] in [ self.names[i+1], "{}_GT".format(self.names[i+1]) ]:
+				return False
+		return True
+			
+		
+
 	def separate_output(self):
 		"""Separate an output matrix from GEMSTATs predictions into GT and predictions.
 
