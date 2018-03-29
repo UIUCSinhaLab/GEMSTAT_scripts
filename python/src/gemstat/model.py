@@ -1,6 +1,8 @@
 
 import numpy as np
 
+import snot
+
 #Inputs
 class Factor(object):
 	def __init__(self):

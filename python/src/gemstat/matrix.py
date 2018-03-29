@@ -44,6 +44,10 @@ class GEMSTAT_Matrix(object):
 	def hstack_update(self, other):
 		desired_order_other = [other.names_to_rows[i] for i in self.names]
 		self.storage = _NP.hstack([self.storage, other[desired_order_other]])
+	
+	@property
+	def shape(self):
+		return self.storage.shape
 
 	@property	
 	def has_gt(self):
@@ -104,7 +108,7 @@ class GEMSTAT_Matrix(object):
 		outfile.close()
 	
 	@classmethod
-	def load(cls, filename):
+	def load(cls, filename,keep_gt=True):
 		import os
 		if not os.path.exists(filename):
 			raise Exception("file does not exist")
@@ -138,6 +142,8 @@ class GEMSTAT_Matrix(object):
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])
 		retmat.storage = DATA
 		retmat.filename = filename
+		if (not keep_gt) and retmat.has_gt:
+			return retmat.separate_output()[1]
 		return retmat
 
 
