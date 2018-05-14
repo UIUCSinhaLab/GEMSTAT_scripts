@@ -44,12 +44,12 @@ class GEMSTAT_Matrix(object):
 	def hstack_update(self, other):
 		desired_order_other = [other.names_to_rows[i] for i in self.names]
 		self.storage = _NP.hstack([self.storage, other[desired_order_other]])
-	
+
 	@property
 	def shape(self):
 		return self.storage.shape
 
-	@property	
+	@property
 	def has_gt(self):
 		if not self.storage.shape[0]%2 == 0:
 			return False
@@ -57,8 +57,8 @@ class GEMSTAT_Matrix(object):
 			if not self.names[i] in [ self.names[i+1], "{}_GT".format(self.names[i+1]) ]:
 				return False
 		return True
-			
-		
+
+
 
 	def separate_output(self):
 		"""Separate an output matrix from GEMSTATs predictions into GT and predictions.
@@ -149,7 +149,7 @@ class GEMSTAT_Matrix(object):
 		#if any([i != j for i,j in zip(COLNUMS,range(1,len(COLNUMS)+1))]):
 		#	raise Exception("Currently the GEMSTAT_Matirx parser requires that the column numbers be contiguous integers 1-N, sorry.")
 
-		retmat.names = _NP.array(tmp_names[1:],dtype="|S")
+		retmat.names = _NP.array(tmp_names[1:],dtype="|U")
 		retmat.names_to_rows = dict([(retmat.names[i], i) for i in range(len(retmat.names))])
 		retmat.storage = DATA
 		retmat.filename = filename
