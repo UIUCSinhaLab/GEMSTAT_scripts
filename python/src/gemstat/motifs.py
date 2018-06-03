@@ -109,10 +109,10 @@ def read_gemstat_motifs(filelike_or_filename):
                     if None == header_match:
                         raise Exception("Error parsing motif header: {}".format(aline))
                     #start creating a new motif.
-                    next_motif = {"name":header_match["name"],
-                                  "header_length":header_match["length"],
-                                  "pseudocount":header_match["pseudocount"],
-                                    "comments":header_match["comments"],
+                    next_motif = {"name":header_match.group(1),
+                                  "header_length":header_match.group(2),
+                                  "pseudocount":header_match.group(3),
+                                    "comments":header_match.group(4),
                                  "counts":list()}
                     state = 1
                     continue
@@ -126,7 +126,7 @@ def read_gemstat_motifs(filelike_or_filename):
                     line_match = line_pat.match(aline)
                     if None == line_match:
                         raise Exception("Problem processing line: {}".format(aline))
-                    one_line_counts = [float(line_match[i]) for i in ALPH]
+                    one_line_counts = [float(line_match.group(ALPH.index(i)+1)) for i in ALPH]
                     next_motif["counts"].append(one_line_counts)
                     continue
 
