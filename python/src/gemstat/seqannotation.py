@@ -43,7 +43,7 @@ def annotate_sequence(seq, motifs, et=0.5, filter=None):
 
         hits = [Site(
                         (L + i if i < 0 else i) + 1,
-                        (L + i if i < 0 else i) + 1 + one_motif.length,
+                        (L + i if i < 0 else i) + 1 + one_motif.length - 1,
                         False if i < 0 else True,
                         one_motif,
                         -j+bestLLR
