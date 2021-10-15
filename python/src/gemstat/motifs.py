@@ -4,7 +4,7 @@ import numpy as _np
 
 import Bio.motifs
 import Bio.motifs.matrix
-import Bio.Alphabet
+#import Bio.Alphabet
 
 def to_np_array(inmat,letters="ACGT"):
     return _np.array([[inmat[i][j] for i in letters] for j in range(inmat.length)])
@@ -19,12 +19,11 @@ class GEMSTAT_Motif(Bio.motifs.Motif):
         #TODO: Check that the user hasn't provided these in a more BioPython way.
         counts_np = _np.array(counts)#In case the user provided it as a list of lists.
 
-        alphabet = Bio.Alphabet.IUPAC.unambiguous_dna;
-        alphabet.letters = "ACGT"
+        alphabet = "ACGT"
 
-        counts_as_biopython_wants = dict([(alphabet.letters[i],counts_np[:,i]) for i in range(len(alphabet.letters))])
+        counts_as_biopython_wants = dict([(alphabet[i],counts_np[:,i]) for i in range(len(alphabet))])
 
-        super(GEMSTAT_Motif,self).__init__(alphabet=alphabet, counts = np_to_biopython(counts_np,alphabet.letters))
+        super(GEMSTAT_Motif,self).__init__(alphabet=alphabet, counts = np_to_biopython(counts_np,alphabet))
 
         self.name = name
         self.comments = comments if None != comments else ""
@@ -37,8 +36,8 @@ class GEMSTAT_Motif(Bio.motifs.Motif):
 
     @property
     def pssm(self):
-        np_pwm = to_np_array(self.pwm,self.alphabet.letters)
-        np_background = _np.array([[self.background[l] for l in self.alphabet.letters] for i in range(np_pwm.shape[0])])
+        np_pwm = to_np_array(self.pwm,self.alphabet)
+        np_background = _np.array([[self.background[l] for l in self.alphabet] for i in range(np_pwm.shape[0])])
 
         return Bio.motifs.matrix.PositionSpecificScoringMatrix(self.alphabet,
                                              np_to_biopython(
@@ -52,7 +51,7 @@ class GEMSTAT_Motif(Bio.motifs.Motif):
         str_list.append(">{}\t{}\t{}\t#{}".format(self.name, self.length, self.pseudocount,self.comments))
 
         for i in range(self.length):
-            str_list.append("\t".join([str(self.counts[l][i]) for l in self.alphabet.letters]))
+            str_list.append("\t".join([str(self.counts[l][i]) for l in self.alphabet]))
 
         str_list.append("<")
         return "\n".join(str_list)

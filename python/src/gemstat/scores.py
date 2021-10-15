@@ -7,11 +7,11 @@ def sse_old(gt,prediction):
 	return _S.real(_S.power(gt - prediction,2.0).sum())
 
 def sse(gt,predictions):
-    gt = _S.array(gt,ndmin=2)
-    predictions = _S.array(predictions,ndmin=2)
-    N,M = predictions.shape
-    errors = _S.power(_S.maximum(0.0,predictions) - _S.maximum(0.0,gt), 2.0).mean(1)
-    return _S.absolute(_S.real(errors))
+	gt = _S.array(gt,ndmin=2)
+	predictions = _S.array(predictions,ndmin=2)
+	N,M = predictions.shape
+	errors = _S.power(_S.maximum(0.0,predictions) - _S.maximum(0.0,gt), 2.0).mean(1)
+	return _S.absolute(_S.real(errors))
 
 def wPGP(gt,prediction):
 	"""
@@ -23,7 +23,7 @@ def wPGP(gt,prediction):
 	
 	reward = (gt*_S.minimum(gt,prediction)).sum()/_S.power(gt,2.0).sum()
 	
-    	penalty_num = (
+	penalty_num = (
 		(r_max - gt)
 		*(prediction - gt)
 		*_S.array(prediction > gt,dtype=_S.float_)

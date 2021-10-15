@@ -1,15 +1,21 @@
+import numpy as _np
 import scipy as _S
-from Bio.Alphabet.IUPAC import unambiguous_dna as _unamb_dna
+#from Bio.Alphabet.IUPAC import unambiguous_dna as _unamb_dna
+_unamb_dna = "ACGT"
 from Bio.motifs import Motif as _MOT
 from Bio.Seq import Seq as _Seq
 import re as _re
-import StringIO as _SIO
+from io import StringIO
 
 class GemPWM(_MOT):
-	def __init__(self,inname,counts,pseudocount="0.1"):
-		self.name = inname
+	def __init__(self,inname,counts,pseudocount=0.1,comment=""):
+		
+		pseudocount = float(pseudocount)
 		countsdict = dict(zip("ACGT",counts.T+pseudocount))
 		super(GemPWM, self).__init__(alphabet=_unamb_dna,counts=countsdict)
+		
+		self.name = inname
+		self.comment = comment
 
 	def get_consensus_score(self):
 		return self.pssm.calculate(self.consensus) / _S.log2(_S.e)
@@ -25,13 +31,39 @@ class GemPWM(_MOT):
 
 	@classmethod
 	def parse(cls, filename):
-		readall = None
+		"""
+		"""
+		
+		#thanks to : https://www.regular-expressions.info/floatingpoint.html
+		float_pattern_str = "[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
+		float_pattern = _re.compile(float_pattern_str)
+		
+		#motif_begin  = _re.compile("^>",_re.DOTALL)
+		motif_header = _re.compile("^>(?P<name>\w+)\s*(?P<length>\d+)\s*(?P<pseudocount>" + float_pattern_str + ")\s*(?P<comment>#.*)?$",_re.DOTALL)
+		motif_line   = _re.compile("^([^<]+)$",_re.DOTALL)
+		motif_end    = _re.compile("^<\s*$",_re.DOTALL)
+		
 		with open(filename,"r") as infile:
-			readall = infile.read()
-
-
-		getter = _re.compile("""^>(\w+)\s*(\d+)\s*([0-9.]+)\s*$([^<]+)<""",_re.MULTILINE | _re.DOTALL)
-		for one_motif in getter.findall(readall):
-			name, length, pseudocount, counts = one_motif
-			counts = _S.loadtxt(_SIO.StringIO(counts))
-			yield cls(name, counts, float(pseudocount))
+			l = infile.readline()
+			while l:
+				head_match = motif_header.match(l)
+				if not head_match:
+					raise Exception("Unexpected line in motif file: {} ".format(filename))
+				name, length, pseudo, comment = head_match.groups()
+				
+				#counts_sio = StringIO()
+				
+				l = infile.readline()
+				count_list = list()
+				while l:
+					if motif_end.match(l):
+						break
+					#otherwise
+					count_list.append(l)
+					l = infile.readline()
+				
+				counts = _np.loadtxt(StringIO("\n".join(count_list)))
+				
+				yield cls(name,counts,float(pseudo),comment)
+				
+				l = infile.readline()
