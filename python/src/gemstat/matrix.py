@@ -128,10 +128,10 @@ class GEMSTAT_Matrix(object):
 		tmp_names = list()
 		tmp_namemap = dict()
 		def _convert_and_store_name(in_str):
-			if sys.version_info >= (3,0):
+			if isinstance(in_str, bytes):
 				in_str = in_str.decode("ASCII").strip()
 			else:
-				in_str = str(in_str).decode("ASCII").strip()
+				in_str = str(in_str).strip()
 			position = len(tmp_names)
 			tmp_names.append(in_str)
 			tmp_namemap[in_str] = position
