@@ -1,0 +1,8 @@
+services:
+  testenv:
+    image: gs-scripts-testenv
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./:/app
