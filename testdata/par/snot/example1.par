@@ -1,0 +1,26 @@
+{"tfs":{
+	"cic":{ "annot_thresh":0.3, "maxbind":0.001, "alpha_a":0.00001, "alpha_r":1.0 },
+	"mad":{ "annot_thresh":0.3, "maxbind":0.001, "alpha_a":1.0, "alpha_r":1.0 },
+  "med":{ "annot_thresh":0.3, "maxbind":0.001, "alpha_a":0.00001, "alpha_r":1.0 },
+	"dl":{	"annot_thresh":0.3, "maxbind":0.001, "alpha_a":1.0, "alpha_r":1.0 },
+	"twi":{	"annot_thresh":0.3, "maxbind":0.001, "alpha_a":1.0, "alpha_r":1.0 },
+	"sna":{ "annot_thresh":0.3, "maxbind":0.001, "alpha_a":0.00001, "alpha_r":1.0 },
+	"vnd":{ "annot_thresh":0.3, "maxbind":0.001, "alpha_a":0.00001, "alpha_r":1.0 }
+	},
+"inter":{ "cic:dl":100.0, "dl:dl":100.0, "dl:twi":1.0
+	, "mad:med":1.0
+	, "cic:vnd":1.0
+        , "vnd:vnd":1.0
+},
+"qbtm":[0.001,0.001,0.001,0.001,0.001,0.001,0.001],
+"enh":[
+	{"pi":0.00004,"beta":1},
+	{"pi":0.00004,"beta":1},
+	{"pi":0.00004,"beta":1},
+	{"pi":0.00004,"beta":1},
+	{"pi":0.00004,"beta":0.5},
+	{"pi":0.00004,"beta":0.5},
+	{"pi":0.00004,"beta":0.5}
+	],
+"signaling":{ "cic_att":0.0000000001 , "dpp_mad_pmad": 0.9 }
+}

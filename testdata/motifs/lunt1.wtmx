@@ -1,0 +1,68 @@
+>cic    8       0.5     #_SANGER_5_FBgn0028386
+1       10      0       6
+0       11      0       7
+0       18      0       0
+18      0       3       3
+0       0       0       18
+0       0       0       18
+0       10      8       0
+18      0       0       0
+<
+>mad    6       20.0    #Created by Bryan J Lunt on 2018-5-20 after skimming the paper http://dx.doi.org/10.1016/j.semcdb.2014.04.036
+0   0   100 0
+50  0   50  0
+0   100 0   0
+0   0   100 0
+25  25  25  25
+0   100 0   0
+<
+>med    10   20.0   # Includes Shnurri, Created by Bryan J Lunt on 2018-5-20 after skimming the paper http://dx.doi.org/10.1016/j.semcdb.2014.04.036
+25  25  25  25
+25  25  25  25
+25  25  25  25
+25  25  25  25
+25  25  25  25
+0   0   100 0
+0   0   0   100
+0   100 0   0
+0   0   0   10000
+0   0   100 0
+<
+>dl     5       10.0     #_NBT_FBgn0000462 #Hand edited by Bryan J. Lunt <bjlunt2@illinois.edu> on 2018-5-6 from his previous DL half-motif.
+20       20       50      20
+10       10       60      10
+5       5       60      5
+50      10       10       40
+50      10       10       40
+<
+>twi    8       1.0     #Dmel_twi_FLYREG-12 12
+26      17      54      1
+0       99      0       0
+72      4       21      1
+0       14      16      69
+22      19      51      7
+0       0       0       99
+0       0       97      2
+0       8       7       83
+<
+>sna    9   0.1 #From Stathopoulus / Levine paper. Plus beginning B and ending K/b by Bryan J. Lunt on 2018-6-6
+0   0.5 0.4 0.5
+5   5   0   0
+5   5   0   0
+0   10  0   0
+5   0   0   5
+0   0   0   10
+0   0   10  0
+0   5   0   5
+0   0.1   0.5   0.5
+<
+>vnd    8       10.0    #_SOLEXA_FBgn0003986
+117     402     247     402
+173     64      12      919
+25      557     210     376
+958     17      191     2
+1117    42      5       4
+3       7       1138    20
+214     24      78      852
+469     2       683     14
+<

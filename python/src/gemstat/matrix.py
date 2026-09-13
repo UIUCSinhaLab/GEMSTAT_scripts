@@ -157,8 +157,10 @@ class GEMSTAT_Matrix(object):
 			return retmat.separate_output()[1]
 		return retmat
 
+	def __repr__(self):
+		return "<GEMSTAT_Matrix(rows={},cols={})".format(*self.storage.shape)
 
 if __name__ == "__main__":
 	F = FactorExpr()
-	F.add("test", S.random.randn(10))
+	F.add("test", _NP.random.randn(10))
 	F.write("/tmp/factor_test.txt")

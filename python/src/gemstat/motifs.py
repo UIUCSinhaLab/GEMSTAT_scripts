@@ -62,16 +62,18 @@ class GEMSTAT_Motif(Bio.motifs.Motif):
         else:
             return super(GEMSTAT_Motif,self).format(*args)
 
+    def __repr__(self):
+        return "<GEMSTAT_Motif({})>".format(self.name)
 
 
 
 def read_gemstat_motifs(filelike_or_filename):
     float_re = "(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?"
 
-    header_pat = _re.compile("^>(?P<name>\S+)\s+(?P<length>\S+)\s+(?P<pseudocount>" +
-                             float_re + ")\s*(?P<comments>.*)$")
+    header_pat = _re.compile(r"^>(?P<name>\S+)\s+(?P<length>\S+)\s+(?P<pseudocount>" +
+                             float_re + r")\s*(?P<comments>.*)$")
     ALPH = "ACGT"
-    line_pat_string = "^\s*" + "\s+".join(["(?P<{}>{})".format(i,float_re) for i in ALPH]) + "\s*$"
+    line_pat_string = r"^\s*" + r"\s+".join(["(?P<{}>{})".format(i,float_re) for i in ALPH]) + r"\s*$"
     line_pat = _re.compile( line_pat_string )
 
     def make_motif(in_dict):
@@ -147,3 +149,5 @@ def read_gemstat_motifs(filelike_or_filename):
         motiflist = gemstat_read_helper(filelike_or_filename)
 
     return motiflist
+
+__all__ = ["GEMSTAT_Motif","read_gemstat_motifs","to_np_array","np_to_biopython"]

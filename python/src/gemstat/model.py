@@ -1,5 +1,7 @@
 
-import numpy as np
+import numpy as _NP
+
+from collections import OrderedDict
 
 from . import snot
 
@@ -70,20 +72,18 @@ class Model(object):
 	def add_interaction(self,new_inter):
 		self.interactions.append(new_inter)
 
-from collections import OrderedDict
-
 class SetDict(dict):
 	def _keyconvert(self,key):
 		if isinstance(key,str):
 			key = [key]
 		return frozenset(key)
-	
+
 	def __setitem__(self,key,item):
 		return super(SetDict,self).__setitem__(self._keyconvert(key),item)
-	
+
 	def __getitem__(self,key):
 		return super(SetDict,self).__getitem__(self._keyconvert(key))
-	
+
 
 class ParFile(object):
 	"""Reads an intermediate representation of a par file. That can then be transformed into a model.
@@ -294,4 +294,4 @@ def parfile_to_vector(par_dict,factor_roles=None,include_pis=False):
 	storage.extend(par_dict["betas"])
 	storage.extend(par_dict["thresholds"])
 
-	return np.array(storage)
+	return _NP.array(storage)
